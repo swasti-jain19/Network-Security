@@ -1,0 +1,17 @@
+1. Set Up
+- conda create -p venv python==3.10  
+- create requirements.txt
+- create .gitignore
+- README.md
+- create .github/workflows/main.yml
+- folder Network_Data, notebooks, networksecurity
+- Inside networksecurity create __init__.py, exception, logging, components, constant, entity, pipeline, utils, cloud
+- create Dockerfile, setup.py
+- conda activate venv/
+
+
+2. GitHub Setup
+- create repo and push setup
+- create __init_.py packages in each folder and push 
+
+3. 
