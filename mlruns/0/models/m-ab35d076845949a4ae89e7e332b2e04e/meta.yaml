@@ -1,0 +1,10 @@
+artifact_location: file:///C:/DA/Projects/End%20to%20End%20ML%20Project/mlruns/0/models/m-ab35d076845949a4ae89e7e332b2e04e/artifacts
+creation_timestamp: 1750486000347
+experiment_id: '0'
+last_updated_timestamp: 1750486008223
+model_id: m-ab35d076845949a4ae89e7e332b2e04e
+model_type: null
+name: model
+source_run_id: 63f80f19b2d648258630f0b4044f3997
+status: 2
+status_message: null

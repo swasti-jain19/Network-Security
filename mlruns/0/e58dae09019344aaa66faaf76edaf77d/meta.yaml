@@ -1,0 +1,14 @@
+artifact_uri: file:///C:/DA/Projects/End%20to%20End%20ML%20Project/mlruns/0/e58dae09019344aaa66faaf76edaf77d/artifacts
+end_time: 1750486013350
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: e58dae09019344aaa66faaf76edaf77d
+run_name: aged-trout-247
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1750486008333
+status: 3
+tags: []
+user_id: welcome
