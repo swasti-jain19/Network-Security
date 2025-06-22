@@ -24,6 +24,10 @@ from sklearn.ensemble import (
 import mlflow
 from urllib.parse import urlparse
 
+import dagshub
+dagshub.init(repo_owner='swasti-jain19', repo_name='Network-Security', mlflow=True)
+
+
 class ModelTrainer:
     def __init__(self,model_trainer_config:ModelTrainerConfig,data_transformation_artifact:DataTransformationArtifact):
         try:
@@ -32,17 +36,21 @@ class ModelTrainer:
         except Exception as e:
             raise NetworkSecurityException(e,sys)
         
-    def track_mlflow(self,best_model,classificationmetric):
-
+    def track_mlflow(self,best_model,classification_metric):
         with mlflow.start_run():
-            f1_score=classificationmetric.f1_score
-            precision_score=classificationmetric.precision_score
-            recall_score=classificationmetric.recall_score
+            f1_score = classification_metric.f1_score
+            precision_score = classification_metric.precision_score
+            recall_score = classification_metric.recall_score
 
-            mlflow.log_metric("f1_score",f1_score)
-            mlflow.log_metric("precision",precision_score)
-            mlflow.log_metric("recall_score",recall_score)
-            mlflow.sklearn.log_model(best_model,"model")
+            mlflow.log_metric("f1_score", f1_score)
+            mlflow.log_metric("precision_score", precision_score)
+            mlflow.log_metric("recall_score", recall_score)
+
+            import joblib
+
+            model_file = "best_model.pkl"
+            joblib.dump(best_model, model_file)
+            mlflow.log_artifact(model_file)
         
     def train_model(self,X_train,y_train,x_test,y_test):
         models = {
@@ -89,12 +97,13 @@ class ModelTrainer:
         best_model_name = list(model_report.keys())[
             list(model_report.values()).index(best_model_score)
         ]
+
         best_model = models[best_model_name]
         y_train_pred=best_model.predict(X_train)
 
         classification_train_metric=get_classification_score(y_true=y_train,y_pred=y_train_pred)
 
-        ## Track the experiements with mlflow
+        # to track the experiments with model with mlflow
         self.track_mlflow(best_model,classification_train_metric)
 
         y_test_pred=best_model.predict(x_test)
@@ -110,6 +119,8 @@ class ModelTrainer:
         Network_Model=NetworkModel(preprocessor=preprocessor,model=best_model)
         save_object(self.model_trainer_config.trained_model_file_path,obj=NetworkModel)
 
+        save_object("final_model/model.pkl",best_model)
+
         ## Model Trainer Artifact
         model_trainer_artifact=ModelTrainerArtifact(trained_model_file_path=self.model_trainer_config.trained_model_file_path,
                              train_metric_artifact=classification_train_metric,
@@ -117,9 +128,7 @@ class ModelTrainer:
                              )
         logging.info(f"Model trainer artifact: {model_trainer_artifact}")
         return model_trainer_artifact
-
-
-
+    
     def initiate_model_trainer(self)->ModelTrainerArtifact:
         try:
             train_file_path = self.data_transformation_artifact.transformed_train_file_path
